@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ゴミ収集 LINE 自動報告 — 使い方・完成報告</title>
+  <style>
+    :root {
+      --bg: #f0f2f5;
+      --surface: #fff;
+      --text: #1a1f2e;
+      --muted: #5c6578;
+      --accent: #2563eb;
+      --line-green: #06c755;
+      --border: #e4e8ef;
+      --brown: #a06840;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Meiryo", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .hero {
+      background: #1e3a5f;
+      color: #fff;
+      padding: 48px 24px 56px;
+      text-align: center;
+    }
+
+    .hero .badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      background: rgba(255,255,255,0.15);
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .hero p {
+      font-size: 0.9375rem;
+      opacity: 0.9;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 20px 64px;
+    }
+
+    section {
+      margin-top: 40px;
+    }
+
+    section h2 {
+      font-size: 1.125rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    section p, section li {
+      font-size: 0.9375rem;
+      color: var(--muted);
+    }
+
+    section ul {
+      padding-left: 1.25rem;
+      margin-top: 8px;
+    }
+
+    section li + li { margin-top: 6px; }
+
+    /* Main showcase: screenshot + explanation */
+    .showcase {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: start;
+      margin-top: -32px;
+    }
+
+    @media (max-width: 768px) {
+      .showcase { grid-template-columns: 1fr; margin-top: 24px; }
+    }
+
+    .phone-wrap {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 24px;
+      border: 1px solid var(--border);
+    }
+
+    .phone-wrap .label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--line-green);
+      text-align: center;
+      margin-bottom: 12px;
+      letter-spacing: 0.06em;
+    }
+
+    .phone-frame {
+      border-radius: 28px;
+      overflow: hidden;
+      border: 3px solid #222;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+
+    .phone-frame img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .phone-caption {
+      font-size: 0.8125rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    .message-breakdown {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid var(--border);
+    }
+
+    .message-breakdown h3 {
+      font-size: 1rem;
+      margin-bottom: 16px;
+    }
+
+    .msg-block {
+      border-left: 4px solid var(--accent);
+      padding: 12px 16px;
+      background: #f8f9fb;
+      border-radius: 0 10px 10px 0;
+      margin-bottom: 12px;
+    }
+
+    .msg-block.brown { border-left-color: var(--brown); }
+
+    .msg-block .tag {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+    }
+
+    .msg-block.brown .tag { color: var(--brown); }
+
+    .msg-block .text {
+      font-size: 0.875rem;
+      color: var(--text);
+      white-space: pre-line;
+    }
+
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: var(--surface);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+    }
+
+    .flow-step {
+      text-align: center;
+      padding: 16px 20px;
+      background: #f8f9fb;
+      border-radius: 12px;
+      min-width: 140px;
+    }
+
+    .flow-step strong {
+      display: block;
+      font-size: 0.8125rem;
+      margin-bottom: 4px;
+    }
+
+    .flow-step span {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .flow-arrow {
+      font-size: 1.25rem;
+      color: var(--muted);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+    }
+
+    .card h3 {
+      font-size: 0.9375rem;
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      font-size: 0.8125rem;
+    }
+
+    .card .time {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: #eff6ff;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+
+    .status-ok {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ecfdf5;
+      color: #047857;
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 10px 16px;
+      border-radius: 10px;
+      margin-top: 12px;
+    }
+
+    .status-ok::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      background: #10b981;
+      border-radius: 50%;
+    }
+
+    footer {
+      text-align: center;
+      padding: 32px 20px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      margin-top: 48px;
+    }
+
+    footer a { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <header class="hero">
+    <span class="badge">かすみがうら市 A地区</span>
+    <h1>ゴミ収集 LINE 自動報告</h1>
+    <p>毎朝7時、収集がある日だけ LINE で通知。実際に届いた画面を使った使い方・完成報告です。</p>
+    <div class="status-ok">2026年8月27日 — テスト通知の届きを確認済み</div>
+  </header>
+
+  <div class="container">
+
+    <div class="showcase">
+      <div class="phone-wrap">
+        <div class="label">実際の LINE 通知（スクリーンショット）</div>
+        <div class="phone-frame">
+          <img src="assets/line-screenshot.png" alt="LINEゴミ収集通知の実際の画面。茶色びんの収集日通知が表示されている。">
+        </div>
+        <p class="phone-caption">ゴミ収集通知（@611ntmct）· 2026/8/27 4:12 受信</p>
+      </div>
+
+      <div class="message-breakdown">
+        <h3>届いたメッセージの内容</h3>
+
+        <div class="msg-block">
+          <div class="tag">ヘッダー</div>
+          <div class="text">【今日のゴミ収集】A地区（志筑・新治・稲吉・稲吉東）
+2026年8月25日（火）</div>
+        </div>
+
+        <div class="msg-block brown">
+          <div class="tag">収集品目</div>
+          <div class="text">■ 茶色びん
+  ・茶色のびん類
+  ・中をすすいでキャップを外す</div>
+        </div>
+
+        <div class="msg-block">
+          <div class="tag">期限・出典</div>
+          <div class="text">午前08:00までに集積所へ
+（かすみがうら市 公式カレンダーに基づく通知）</div>
+        </div>
+
+        <p style="font-size:0.8125rem; color:var(--muted); margin-top:8px;">
+          収集がない日は通知されません。GitHub Actions が毎朝7:00（JST）に自動判定します。
+        </p>
+      </div>
+    </div>
+
+    <section>
+      <h2>仕組み</h2>
+      <div class="flow">
+        <div class="flow-step">
+          <strong>① カレンダー</strong>
+          <span>市公式PDF<br>schedule-a.json</span>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">
+          <strong>② 毎朝7:00</strong>
+          <span>GitHub Actions<br>自動実行</span>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">
+          <strong>③ 判定</strong>
+          <span>今日、収集<br>あり？</span>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">
+          <strong>④ LINE通知</strong>
+          <span>スマホに<br>届く</span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>使い方（日常）</h2>
+      <div class="cards">
+        <div class="card">
+          <span class="time">毎朝 7:00</span>
+          <h3>通知を確認</h3>
+          <p>LINE の「ゴミ収集通知」を開く。メッセージが来ていれば、その日の収集品目を確認。</p>
+        </div>
+        <div class="card">
+          <span class="time">〜 8:00</span>
+          <h3>ゴミを出す</h3>
+          <p>メッセージの出し方に従い、午前8時までに集積所へ。燃やすごみは市指定袋。</p>
+        </div>
+        <div class="card">
+          <span class="time">通知なし</span>
+          <h3>何もしない</h3>
+          <p>その日は収集なし。LINE に届かないのが正常な動作です。</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>対応品目（A地区）</h2>
+      <ul>
+        <li><strong style="color:#D64545">燃やすごみ</strong> — 市指定袋・月・木など</li>
+        <li><strong style="color:#5B8DEF">カン・不燃</strong> — 50Lコンテナ</li>
+        <li><strong style="color:#3AAFA9">ペットボトル他</strong> — キャップ外し・つぶす</li>
+        <li><strong style="color:#E8A838">プラ容器他</strong> — 段ボール・新聞紙含む</li>
+        <li><strong style="color:#A06840">茶色びん / 無色びん など</strong> — 指定日に収集</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>関連ファイル</h2>
+      <ul>
+        <li><a href="report.html">report.html</a> — 通知デザインのプレビュー（日付変更可）</li>
+        <li><a href="https://github.com/a6ctkul9-droid/my-first-repo/blob/main/data/schedule-a.json">schedule-a.json</a> — 収集日データ（半年ごとに更新）</li>
+        <li><a href="https://github.com/a6ctkul9-droid/my-first-repo/actions">GitHub Actions</a> — 自動実行ログ</li>
+        <li><a href="https://www.city.kasumigaura.lg.jp/page/page010047.html">市公式カレンダー</a></li>
+      </ul>
+    </section>
+
+  </div>
+
+  <footer>
+    かすみがうら市 A地区 ゴミ収集 LINE 自動報告ツール ·
+    <a href="https://github.com/a6ctkul9-droid/my-first-repo">my-first-repo</a>
+  </footer>
+
+</body>
+</html>
