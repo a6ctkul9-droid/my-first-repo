@@ -1,0 +1,30 @@
+{
+  "district": "A",
+  "districtLabel": "A地区（志筑・新治・稲吉・稲吉東）",
+  "city": "かすみがうら市",
+  "period": "令和8年4月〜9月（R8上半期）",
+  "source": "https://www.city.kasumigaura.lg.jp/page/page010047.html",
+  "notifyTime": "07:00",
+  "deadlineTime": "08:00",
+  "schedule": {
+    "2026-08-02": ["can"],
+    "2026-08-03": ["burnable"],
+    "2026-08-04": ["glass"],
+    "2026-08-05": ["pet"],
+    "2026-08-06": ["burnable"],
+    "2026-08-09": ["plastic"],
+    "2026-08-10": ["burnable"],
+    "2026-08-11": ["other-bottle"],
+    "2026-08-13": ["burnable"],
+    "2026-08-16": ["can"],
+    "2026-08-17": ["burnable"],
+    "2026-08-18": ["clear-bottle"],
+    "2026-08-19": ["pet"],
+    "2026-08-20": ["burnable"],
+    "2026-08-23": ["plastic"],
+    "2026-08-24": ["burnable"],
+    "2026-08-25": ["brown-bottle"],
+    "2026-08-27": ["burnable"],
+    "2026-08-30": ["can"]
+  }
+}

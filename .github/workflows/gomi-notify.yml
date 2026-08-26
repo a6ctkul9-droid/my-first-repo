@@ -1,0 +1,44 @@
+name: Gomi Notify
+
+on:
+  schedule:
+    # UTC 22:00 = JST 07:00
+    - cron: "0 22 * * *"
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Target date (YYYY-MM-DD). Empty = today JST"
+        required: false
+        type: string
+      dry_run:
+        description: "Dry run (do not send LINE)"
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - name: Send notification
+        env:
+          LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+          LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
+        run: |
+          ARGS=""
+          if [ -n "${{ inputs.date }}" ]; then
+            ARGS="$ARGS --date ${{ inputs.date }}"
+          fi
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          npm run notify -- $ARGS
